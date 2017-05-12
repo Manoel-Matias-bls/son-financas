@@ -17,7 +17,7 @@ class CategoryCostsSeeder extends AbstractSeed
         $faker = \Faker\Factory::create('pt_BR');
         $category_costs = $this->table('category_costs');
         $data = [];
-        foreach (range(1,10) as $value){
+        foreach (range(1,15) as $value){
             $data[] = [
                   'name' => $faker->name($gender ='male' && 'female'),
                   'created_at' => date('Y-m-d H:i:s'),
