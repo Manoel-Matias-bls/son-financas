@@ -29,10 +29,10 @@ class RoutePlugin implements PluginInterface
         $request = $this->getRequest();
 
         $container->add('routing', $map);
-        $container->add('routing.matcher',$matcher);
-        $container->add('routing.generator',$generator);
-        $container->add(RequestInterface::class,$this->getRequest());
-        $container->addLazy('route', function(ContainerInterface $container){
+        $container->add('routing.matcher', $matcher);
+        $container->add('routing.generator', $generator);
+        $container->add(RequestInterface::class, $this->getRequest());
+        $container->addLazy('route', function (ContainerInterface $container) {
             $matcher = $container->get('routing.matcher');
             $request = $container->get(RequestInterface::class);
             return $matcher->match($request);
@@ -40,7 +40,7 @@ class RoutePlugin implements PluginInterface
 
     }
 
-    protected function getRequest():RequestInterface
+    protected function getRequest(): RequestInterface
     {
         return ServerRequestFactory::fromGlobals(
             $_SERVER, $_GET, $_POST, $_COOKIE, $_FILES

@@ -5,7 +5,10 @@ namespace SONFin;
 
 #Classe para controle da aplicação
 
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use SONFin\Plugins\PluginInterface;
+use Zend\Diactoros\Response\SapiEmitter;
 
 class Application
 {
@@ -35,7 +38,7 @@ class Application
         $plugin->register($this->serviceContainer);
     }
 
-    public function get($path, $action, $name = null):Application
+    public function get($path, $action, $name = null): Application
     {
         $routing = $this->service('routing');
         $routing->get($name, $path, $action);
@@ -43,11 +46,30 @@ class Application
         return $this;
     }
 
+
     public function start()
     {
         $route = $this->service('route');
+        $request = $this->service(RequestInterface::class);
+
+        if (!$route) {
+            echo "Page not found";
+            exit;
+        }
+
+        foreach ($route->attributes as $key => $value) {
+            $request = $request->withAttribute($key, $value);
+        }
+
         $callable = $route->handler;
-        $callable();
+        $response = $callable($request);
+        $this->emitResponse($response);
+    }
+
+    protected function emitResponse(ResponseInterface $response)
+    {
+        $emitter = new SapiEmitter();
+        $emitter->emit($response);
     }
 
 }
